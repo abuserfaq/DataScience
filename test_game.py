@@ -1,3 +1,4 @@
+#/usr/bin/python3
 import numpy as np
 
 def gen (times:int=1000) -> int:
@@ -28,12 +29,15 @@ def guess(number):
     return count
     
       
+import pandas as pd
 
-def game(tm:int=100) ->int:
+def game(tm:int=1000) ->int:
     x = []
     for i in range(tm):
         x.append(guess(gen()))
         i+=1
+    df = pd.DataFrame(x)
+    df.hist()
     print (f'minimum steps = {min(x)}')
 
 
