@@ -1,49 +1,35 @@
-from itertools import count
-from unicodedata import name
-import numpy as np
+#/usr/bin/python3
+from random import randint
+from numpy import less, mean
 
-def random_predict(number:int=1) -> int:
-    """Рандомно угадываем число
+def gen (num:int=100) -> int:
+    return randint(1, num)
 
-    Args:
-        number (int, optional): Загаданное число. Defaults to 1.
+def guess(number):
+    start_number = 0 # start number
+    end_number = 100 #end number
+    current_guess_number = 0 # current random number
+    count = 0 # step number
 
-    Returns:
-        int: Число попыток
-    """
-
-    count = 0
-
-    while True:
+    while current_guess_number != number:
         count += 1
-        predict_number = np.random.randint(1, 101) # предполагаемое число
-        if number == predict_number:
-            break # выход из цикла, если угадали
-    return(count)
-
-print(f'Количество попыток: {random_predict(10)}')
-
-
-
-def score_game(random_predict) -> int:
-    """ ЗА какое кол-во попыток в среднем за 1000 проходов угадывает число
-
-    Args:
-        random_predict (_type_): функция угадывания
-
-    Returns:
-        int: среднее кол-во попыток
-    """
+        current_guess_number = randint(start_number, end_number)
+        if current_guess_number < number:
+            start_number = current_guess_number + (end_number-current_guess_number)//2
+            
+            #print(f'{count} step: nope - need more+  {current_guess_number}  to {number}')
+        elif current_guess_number > number:
+            start_number = current_guess_number//2
+            end_number =  current_guess_number
+            #print(f'{count} step: nope - need less-  {current_guess_number} - {number}')
+    #print(f'win  {count} steps . {current_guess_number} is {number} ')
+    return count
     
-    count_ls = []
-    np.random.seed(1)
-    random_array = np.random.randint(1, 101 , size=(1000))
-    for number in random_array:
-        count_ls.append(random_predict(number))    
-        
-    score = int(np.mean(count_ls))
-    print(f'Ваш алгоритм угадывает число в среднем за : {score} попыток')
-    return score
+def game(total_games:int=1000) ->int:
+    x = []
+    for i in range(total_games):
+        x.append(guess(gen()))
+        i += 1
+    print (f'minimum steps = {min(x)}; max = {max(x)}; среднее = {mean(x)}')
 
-if name == "__main__":
-    score_game(random_predict)    
+game()
